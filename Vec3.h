@@ -83,8 +83,6 @@ struct Vec3 {
     }
 };
 
-using Point3 = Vec3;
-
 Vec3 operator-(const Vec3& v) {
     return Vec3(-v.X, -v.Y, -v.Z);
 }
@@ -103,10 +101,6 @@ Vec3 operator*(const Vec3& v, const float t) {
 
 Vec3 operator*(const float t, const Vec3& v) {
     return Vec3(v.X * t, v.Y * t, v.Z * t);
-}
-
-Vec3 operator*(const Vec3& rhs, const Vec3& lhs) {
-    return Vec3(rhs.X * lhs.X, rhs.Y * lhs.Y, rhs.Z * lhs.Z);
 }
 
 Vec3 operator/(const Vec3& v, const float t) {

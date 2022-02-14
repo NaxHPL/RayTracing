@@ -1,11 +1,34 @@
 #include <iostream>
+#include <cmath>
 #include "Vec3.h"
 #include "Color.h"
 #include "Ray.h"
 
+float RayHitSphere(const Ray& ray, const Vec3& sphereCenter, float sphereRadius) {
+    Vec3 oc = ray.Origin - sphereCenter;
+
+    float a = Vec3::Dot(ray.Direction, ray.Direction);
+    float b = 2.0f * Vec3::Dot(ray.Direction, oc);
+    float c = Vec3::Dot(oc, oc) - sphereRadius * sphereRadius;
+    float discriminant = b * b - 4.0f * a * c;
+    
+    if (discriminant < 0.0f) {
+        return -1.0f;
+    }
+    else {
+        return (-b - std::sqrtf(discriminant)) / (2.0f * a);
+    }
+}
+
 Color GetRayColor(const Ray& ray) {
+    float t = RayHitSphere(ray, Vec3(0.0f, 0.0f, -1.0f), 0.5f);
+    if (t > 0.0f) {
+        Vec3 normal = (ray.At(t) - Vec3(0.0f, 0.0f, -1.0f)).Normalized();
+        return 0.5f * Color(normal.X + 1.0f, normal.Y + 1.0f, normal.Z + 1.0f);
+    }
+
     Vec3 dir = ray.Direction.Normalized();
-    float t = 0.5f * (dir.Y + 1.0f);
+    t = 0.5f * (dir.Y + 1.0f);
     return (1.0f - t) * Color::White() + t * Color(0.5f, 0.7f, 1.0f);
 }
 
@@ -18,7 +41,7 @@ int main() {
     float viewportWidth = viewportHeight * aspectRatio;
     float focalLength = 1.0f;
 
-    Point3 origin(0.0f, 0.0f, 0.0f);
+    Vec3 origin(0.0f, 0.0f, 0.0f);
     Vec3 horizontal(viewportWidth, 0.0f, 0.0f);
     Vec3 vertical(0.0f, viewportHeight, 0.0f);
     Vec3 lowerLeftCorner = origin - horizontal / 2.0f - vertical / 2.0f - Vec3(0.0f, 0.0f, focalLength);
