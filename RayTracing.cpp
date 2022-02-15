@@ -7,16 +7,16 @@
 float RayHitSphere(const Ray& ray, const Vec3& sphereCenter, float sphereRadius) {
     Vec3 oc = ray.Origin - sphereCenter;
 
-    float a = Vec3::Dot(ray.Direction, ray.Direction);
-    float b = 2.0f * Vec3::Dot(ray.Direction, oc);
-    float c = Vec3::Dot(oc, oc) - sphereRadius * sphereRadius;
-    float discriminant = b * b - 4.0f * a * c;
-    
+    float a = ray.Direction.SqrMagnitude();
+    float halfB = Vec3::Dot(ray.Direction, oc);
+    float c = oc.SqrMagnitude() - sphereRadius * sphereRadius;
+    float discriminant = halfB * halfB - a * c;
+
     if (discriminant < 0.0f) {
         return -1.0f;
     }
     else {
-        return (-b - std::sqrtf(discriminant)) / (2.0f * a);
+        return (-halfB - std::sqrtf(discriminant)) / a;
     }
 }
 

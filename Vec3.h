@@ -41,7 +41,7 @@ struct Vec3 {
         return std::sqrtf(X * X + Y * Y + Z * Z);
     }
 
-    float MagnitudeSquared() const {
+    float SqrMagnitude() const {
         return X * X + Y * Y + Z * Z;
     }
 
