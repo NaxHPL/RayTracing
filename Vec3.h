@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <cmath>
+
 struct Vec3 {
     float X;
     float Y;
@@ -83,30 +86,37 @@ struct Vec3 {
     }
 };
 
-Vec3 operator-(const Vec3& v) {
+inline Vec3 operator-(const Vec3& v) {
     return Vec3(-v.X, -v.Y, -v.Z);
 }
 
-Vec3 operator+(const Vec3& rhs, const Vec3& lhs) {
+inline Vec3 operator+(const Vec3& rhs, const Vec3& lhs) {
     return Vec3(rhs.X + lhs.X, rhs.Y + lhs.Y, rhs.Z + lhs.Z);
 }
 
-Vec3 operator-(const Vec3& rhs, const Vec3& lhs) {
+inline Vec3 operator-(const Vec3& rhs, const Vec3& lhs) {
     return Vec3(rhs.X - lhs.X, rhs.Y - lhs.Y, rhs.Z - lhs.Z);
 }
 
-Vec3 operator*(const Vec3& v, const float t) {
+inline Vec3 operator*(const Vec3& v, const float t) {
     return Vec3(v.X * t, v.Y * t, v.Z * t);
 }
 
-Vec3 operator*(const float t, const Vec3& v) {
+inline Vec3 operator*(const float t, const Vec3& v) {
     return Vec3(v.X * t, v.Y * t, v.Z * t);
 }
 
-Vec3 operator/(const Vec3& v, const float t) {
+inline Vec3 operator/(const Vec3& v, const float t) {
     return Vec3(v.X / t, v.Y / t, v.Z / t);
 }
 
-std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
+inline bool operator==(const Vec3& rhs, const Vec3& lhs) {
+    return
+        rhs.X == lhs.X &&
+        rhs.Y == lhs.Y &&
+        rhs.Z == lhs.Z;
+}
+
+inline std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
     return stream << '[' << v.X << ", " << v.Y << ", " << v.Z << ']';
 }

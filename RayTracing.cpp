@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cmath>
 #include "Vec3.h"
-#include "Color.h"
 #include "Ray.h"
+#include "Color.h"
 
 float RayHitSphere(const Ray& ray, const Vec3& sphereCenter, float sphereRadius) {
     Vec3 oc = ray.Origin - sphereCenter;
@@ -57,7 +57,7 @@ int main() {
             Ray ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
             Color rayColor = GetRayColor(ray);
 
-            WriteColor(std::cout, rayColor);
+            rayColor.WritePPM(std::cout);
         }
     }
 
