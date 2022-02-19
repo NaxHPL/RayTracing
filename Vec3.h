@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath>
+#include "RTWeekend.h"
 
 struct Vec3 {
     float X;
@@ -83,6 +84,34 @@ struct Vec3 {
 
     static Vec3 One() {
         return Vec3(1.0f, 1.0f, 1.0f);
+    }
+
+    static Vec3 Random() {
+        return Vec3(RandomFloat(), RandomFloat(), RandomFloat());
+    }
+
+    static Vec3 Random(float min, float max) {
+        return Vec3(RandomFloat(min, max), RandomFloat(min, max), RandomFloat(min, max));
+    }
+
+    static Vec3 RandomInUnitSphere() {
+        float u = RandomFloat();
+        float v = RandomFloat();
+
+        float theta = 2.0f * PI * u;
+        float phi = std::acos(2.0f * v - 1.0f);
+
+        float sinTheta = std::sin(theta);
+        float cosTheta = std::cos(theta);
+        float sinPhi = std::sin(phi);
+        float cosPhi = std::cos(phi);
+
+        float r = std::cbrtf(RandomFloat());
+        float x = r * sinPhi * cosTheta;
+        float y = r * sinPhi * sinTheta;
+        float z = r * cosPhi;
+
+        return Vec3(x, y, z);
     }
 };
 

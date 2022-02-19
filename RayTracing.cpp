@@ -1,34 +1,29 @@
 #include <iostream>
 #include <cmath>
+#include <memory>
+#include "RTWeekend.h"
 #include "Vec3.h"
 #include "Ray.h"
 #include "Color.h"
+#include "IHittable.h"
+#include "HitRecord.h"
+#include "HittableCollection.h"
+#include "Sphere.h"
+#include "Camera.h"
 
-float RayHitSphere(const Ray& ray, const Vec3& sphereCenter, float sphereRadius) {
-    Vec3 oc = ray.Origin - sphereCenter;
-
-    float a = ray.Direction.SqrMagnitude();
-    float halfB = Vec3::Dot(ray.Direction, oc);
-    float c = oc.SqrMagnitude() - sphereRadius * sphereRadius;
-    float discriminant = halfB * halfB - a * c;
-
-    if (discriminant < 0.0f) {
-        return -1.0f;
-    }
-    else {
-        return (-halfB - std::sqrtf(discriminant)) / a;
-    }
-}
-
-Color GetRayColor(const Ray& ray) {
-    float t = RayHitSphere(ray, Vec3(0.0f, 0.0f, -1.0f), 0.5f);
-    if (t > 0.0f) {
-        Vec3 normal = (ray.At(t) - Vec3(0.0f, 0.0f, -1.0f)).Normalized();
-        return 0.5f * Color(normal.X + 1.0f, normal.Y + 1.0f, normal.Z + 1.0f);
+Color GetRayColor(const Ray& ray, const IHittable& world, int depth) {
+    if (depth <= 0) {
+        return Color::Black();;
     }
 
-    Vec3 dir = ray.Direction.Normalized();
-    t = 0.5f * (dir.Y + 1.0f);
+    HitRecord hit;
+    if (world.Hit(ray, 0.001f, INF_F, hit)) {
+        Vec3 target = hit.Point + hit.Normal + Vec3::RandomInUnitSphere();
+        return 0.5f * GetRayColor(Ray(hit.Point, target - hit.Point), world, depth - 1);
+    }
+
+    Vec3 unitDirection = ray.Direction.Normalized();
+    float t = 0.5f * (unitDirection.Y + 1.0f);
     return (1.0f - t) * Color::White() + t * Color(0.5f, 0.7f, 1.0f);
 }
 
@@ -36,30 +31,30 @@ int main() {
     const float aspectRatio = 16.0f / 9.0f;
     const int imageWidth = 400;
     const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
+    const int samplesPerPixel = 100;
+    const int maxDepth = 50;
 
-    float viewportHeight = 2.0f;
-    float viewportWidth = viewportHeight * aspectRatio;
-    float focalLength = 1.0f;
+    HittableCollection world;
+    world.Add(std::make_shared<Sphere>(Vec3(0.0f, 0.0f, -1.0f), 0.5f));
+    world.Add(std::make_shared<Sphere>(Vec3(0.0f, -100.5f, -1.0f), 100.0f));
 
-    Vec3 origin(0.0f, 0.0f, 0.0f);
-    Vec3 horizontal(viewportWidth, 0.0f, 0.0f);
-    Vec3 vertical(0.0f, viewportHeight, 0.0f);
-    Vec3 lowerLeftCorner = origin - horizontal / 2.0f - vertical / 2.0f - Vec3(0.0f, 0.0f, focalLength);
+    Camera camera;
 
     std::cout << "P3\n" << imageWidth << ' ' << imageHeight << '\n' << "255\n";
 
     for (int i = imageHeight - 1; i >= 0; i--) {
         std::cerr << "\nScanlines remaining: " << i << ' ' << std::flush;
         for (int j = 0; j < imageWidth; j++) {
-            float u = static_cast<float>(j) / (imageWidth - 1);
-            float v = static_cast<float>(i) / (imageHeight - 1);
-
-            Ray ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
-            Color rayColor = GetRayColor(ray);
-
-            rayColor.WritePPM(std::cout);
+            Color pixelColor = Color::Black();
+            for (int s = 0; s < samplesPerPixel; s++) {
+                float u = (j + RandomFloat()) / (imageWidth - 1);
+                float v = (i + RandomFloat()) / (imageHeight - 1);
+                Ray ray = camera.GetRay(u, v);
+                pixelColor += GetRayColor(ray, world, maxDepth);
+            }
+            pixelColor.WritePPM(std::cout, samplesPerPixel);
         }
     }
 
-    std::cerr << "\nDone\n";
+    std::cerr << "\nDone.\n";
 }
