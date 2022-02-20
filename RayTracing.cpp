@@ -18,7 +18,7 @@ Color GetRayColor(const Ray& ray, const IHittable& world, int depth) {
 
     HitRecord hit;
     if (world.Hit(ray, 0.001f, INF_F, hit)) {
-        Vec3 target = hit.Point + hit.Normal + Vec3::RandomInUnitSphere();
+        Vec3 target = hit.Point + Vec3::RandomInHemisphere(hit.Normal);
         return 0.5f * GetRayColor(Ray(hit.Point, target - hit.Point), world, depth - 1);
     }
 

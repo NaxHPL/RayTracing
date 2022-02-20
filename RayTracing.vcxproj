@@ -150,6 +150,7 @@
     <ClInclude Include="HitRecord.h" />
     <ClInclude Include="HittableCollection.h" />
     <ClInclude Include="IHittable.h" />
+    <ClInclude Include="IMaterial.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RTWeekend.h" />
     <ClInclude Include="Sphere.h" />

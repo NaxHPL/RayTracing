@@ -13,6 +13,10 @@ struct Vec3 {
 
     Vec3(float x, float y, float z) : X(x), Y(y), Z(z) { }
 
+    Vec3 operator-() {
+        return Vec3(-X, -Y, -Z);
+    }
+
     Vec3& operator+=(const Vec3& v) {
         X += v.X;
         Y += v.Y;
@@ -55,7 +59,7 @@ struct Vec3 {
     }
 
     void Normalize() {
-        float m = this->Magnitude();
+        float m = Magnitude();
         if (m > 0.0f) {
             X /= m;
             Y /= m;
@@ -112,6 +116,17 @@ struct Vec3 {
         float z = r * cosPhi;
 
         return Vec3(x, y, z);
+    }
+
+    static Vec3 RandomUnitVector() {
+        Vec3 v = RandomInUnitSphere();
+        v.Normalize();
+        return v;
+    }
+
+    static Vec3 RandomInHemisphere(const Vec3& normal) {
+        Vec3 v = RandomInUnitSphere();
+        return Dot(v, normal) > 0.0f ? v : -v;
     }
 };
 
