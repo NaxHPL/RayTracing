@@ -89,3 +89,7 @@ inline Color operator*(const Color& c, const float t) {
 inline Color operator*(const float t, const Color& c) {
     return Color(c.R * t, c.G * t, c.B * t);
 }
+
+inline Color operator*(const Color& c1, const Color& c2) {
+    return Color(c1.R * c2.R, c1.G * c2.G, c1.B * c2.B);
+}

@@ -143,6 +143,7 @@
     <ClCompile Include="HittableCollection.cpp" />
     <ClCompile Include="RayTracing.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="Vec3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -151,6 +152,8 @@
     <ClInclude Include="HittableCollection.h" />
     <ClInclude Include="IHittable.h" />
     <ClInclude Include="IMaterial.h" />
+    <ClInclude Include="Lambertian.h" />
+    <ClInclude Include="Metal.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RTWeekend.h" />
     <ClInclude Include="Sphere.h" />

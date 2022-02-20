@@ -13,10 +13,6 @@ struct Vec3 {
 
     Vec3(float x, float y, float z) : X(x), Y(y), Z(z) { }
 
-    Vec3 operator-() {
-        return Vec3(-X, -Y, -Z);
-    }
-
     Vec3& operator+=(const Vec3& v) {
         X += v.X;
         Y += v.Y;
@@ -67,6 +63,14 @@ struct Vec3 {
         }
     }
 
+    bool IsNearZero() const {
+        const float epsilon = 0.000001f;
+        return
+            std::fabs(X) < epsilon &&
+            std::fabs(Y) < epsilon &&
+            std::fabs(Z) < epsilon;
+    }
+
     static float Dot(const Vec3& v1, const Vec3& v2) {
         return
             v1.X * v2.X +
@@ -98,36 +102,13 @@ struct Vec3 {
         return Vec3(RandomFloat(min, max), RandomFloat(min, max), RandomFloat(min, max));
     }
 
-    static Vec3 RandomInUnitSphere() {
-        float u = RandomFloat();
-        float v = RandomFloat();
+    static Vec3 RandomInUnitSphere();
 
-        float theta = 2.0f * PI * u;
-        float phi = std::acos(2.0f * v - 1.0f);
+    static Vec3 RandomUnitVector();
 
-        float sinTheta = std::sin(theta);
-        float cosTheta = std::cos(theta);
-        float sinPhi = std::sin(phi);
-        float cosPhi = std::cos(phi);
+    static Vec3 RandomInHemisphere(const Vec3& normal);
 
-        float r = std::cbrtf(RandomFloat());
-        float x = r * sinPhi * cosTheta;
-        float y = r * sinPhi * sinTheta;
-        float z = r * cosPhi;
-
-        return Vec3(x, y, z);
-    }
-
-    static Vec3 RandomUnitVector() {
-        Vec3 v = RandomInUnitSphere();
-        v.Normalize();
-        return v;
-    }
-
-    static Vec3 RandomInHemisphere(const Vec3& normal) {
-        Vec3 v = RandomInUnitSphere();
-        return Dot(v, normal) > 0.0f ? v : -v;
-    }
+    static Vec3 Reflect(const Vec3& v, const Vec3& normal);
 };
 
 inline Vec3 operator-(const Vec3& v) {
@@ -147,7 +128,7 @@ inline Vec3 operator*(const Vec3& v, const float t) {
 }
 
 inline Vec3 operator*(const float t, const Vec3& v) {
-    return Vec3(v.X * t, v.Y * t, v.Z * t);
+    return v * t;
 }
 
 inline Vec3 operator/(const Vec3& v, const float t) {
