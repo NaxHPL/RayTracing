@@ -13,6 +13,7 @@
 #include "IMaterial.h"
 #include "Lambertian.h"
 #include "Metal.h"
+#include "Dielectric.h"
 
 Color GetRayColor(const Ray& ray, const IHittable& world, int depth) {
     if (depth <= 0) {
@@ -37,6 +38,7 @@ Color GetRayColor(const Ray& ray, const IHittable& world, int depth) {
 }
 
 int main() {
+
     // Image
 
     const float aspectRatio = 16.0f / 9.0f;
@@ -48,20 +50,26 @@ int main() {
     // World
 
     std::shared_ptr<Lambertian> groundMaterial = std::make_shared<Lambertian>(Color(0.8f, 0.8f, 0.0f));
-    std::shared_ptr<Lambertian> centerMaterial = std::make_shared<Lambertian>(Color(0.7f, 0.3f, 0.3f));
-    std::shared_ptr<Metal> leftMaterial = std::make_shared<Metal>(Color(0.8f, 0.8f, 0.8f));
-    std::shared_ptr<Metal> rightMaterial = std::make_shared<Metal>(Color(0.8f, 0.6f, 0.2f));
+    std::shared_ptr<Lambertian> centerMaterial = std::make_shared<Lambertian>(Color(0.1f, 0.2f, 0.5f));
+    std::shared_ptr<Dielectric> leftMaterial = std::make_shared<Dielectric>(1.5f);
+    std::shared_ptr<Metal> rightMaterial = std::make_shared<Metal>(Color(0.8f, 0.6f, 0.2f), 0.0f);
 
     HittableCollection world;
-
     world.Add(std::make_shared<Sphere>(Vec3(0.0f, -100.5f, -1.0f), 100.0f, groundMaterial));
     world.Add(std::make_shared<Sphere>(Vec3(0.0f, -0.0f, -1.0f), 0.5f, centerMaterial));
-    world.Add(std::make_shared<Sphere>(Vec3(-1.0f, -0.0f, -1.0f), 0.5f, leftMaterial));
-    world.Add(std::make_shared<Sphere>(Vec3(1.0f, -0.0f, -1.0f), 0.5f, rightMaterial));
+    world.Add(std::make_shared<Sphere>(Vec3(-1.0f, 0.0f, -1.0f), 0.5f, leftMaterial));
+    world.Add(std::make_shared<Sphere>(Vec3(-1.0f, 0.0f, -1.0f), -0.45f, leftMaterial));
+    world.Add(std::make_shared<Sphere>(Vec3(1.0f, 0.0f, -1.0f), 0.5f, rightMaterial));
 
     // Camera
 
-    Camera camera;
+    Camera camera(
+        Vec3(-2.0f, 2.0f, 1.0f),
+        Vec3::Forward(),
+        Vec3::Up(),
+        20.0f,
+        aspectRatio
+    );
 
     // Render
 

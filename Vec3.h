@@ -64,7 +64,7 @@ struct Vec3 {
     }
 
     bool IsNearZero() const {
-        const float epsilon = 0.000001f;
+        const float epsilon = 1e-6f;
         return
             std::fabs(X) < epsilon &&
             std::fabs(Y) < epsilon &&
@@ -94,6 +94,18 @@ struct Vec3 {
         return Vec3(1.0f, 1.0f, 1.0f);
     }
 
+    static Vec3 Right() {
+        return Vec3(1.0f, 0.0f, 0.0f);
+    }
+
+    static Vec3 Up() {
+        return Vec3(0.0f, 1.0f, 0.0f);
+    }
+
+    static Vec3 Forward() {
+        return Vec3(0.0f, 0.0f, -1.0f);
+    }
+
     static Vec3 Random() {
         return Vec3(RandomFloat(), RandomFloat(), RandomFloat());
     }
@@ -109,6 +121,8 @@ struct Vec3 {
     static Vec3 RandomInHemisphere(const Vec3& normal);
 
     static Vec3 Reflect(const Vec3& v, const Vec3& normal);
+
+    static Vec3 Refract(const Vec3& v, const Vec3& normal, float etaOverEtaPrime);
 };
 
 inline Vec3 operator-(const Vec3& v) {
