@@ -116,6 +116,8 @@ struct Vec3 {
 
     static Vec3 RandomInUnitSphere();
 
+    static Vec3 RandomInUnitDisk();
+
     static Vec3 RandomUnitVector();
 
     static Vec3 RandomInHemisphere(const Vec3& normal);

@@ -61,6 +61,10 @@ struct Color {
         return Color(1.0f, 1.0f, 1.0f);
     }
 
+    static Color Grey() {
+        return Color(0.5f, 0.5f, 0.5f);
+    }
+
     static Color Red() {
         return Color(1.0f, 0.0f, 0.0f);
     }
@@ -71,6 +75,14 @@ struct Color {
 
     static Color Blue() {
         return Color(0.0f, 0.0f, 1.0f);
+    }
+
+    static Color Random() {
+        return Color(RandomFloat(), RandomFloat(), RandomFloat());
+    }
+
+    static Color Random(float min, float max) {
+        return Color(RandomFloat(min, max), RandomFloat(min, max), RandomFloat(min, max));
     }
 };
 
