@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
 #include <memory>
+#include <cstdlib>
+#include <ctime>
 #include "RTWeekend.h"
 #include "Vec3.h"
 #include "Ray.h"
@@ -86,12 +88,14 @@ HittableCollection GetRandomScene() {
 
 int main() {
 
+    std::srand(std::time(NULL));
+
     // Image
 
     const float aspectRatio = 16.9f / 9.0f;
-    const int imageWidth = 720;
+    const int imageWidth = 1200;
     const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
-    const int samplesPerPixel = 50;
+    const int samplesPerPixel = 500;
     const int maxDepth = 50;
 
     // World
