@@ -3,6 +3,7 @@
 #include "HittableCollection.h"
 #include "IHittable.h"
 #include "HitRecord.h"
+#include "AABB.h"
 
 struct Ray;
 
@@ -19,4 +20,8 @@ bool HittableCollection::Hit(const Ray& ray, float tMin, float tMax, HitRecord& 
     }
 
     return hitAnything;
+}
+
+bool HittableCollection::BoundingBox(float time0, float time1, AABB& aabbOut) const {
+    return true;
 }

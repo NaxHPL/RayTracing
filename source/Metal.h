@@ -15,7 +15,7 @@ struct Metal : IMaterial {
 
     bool Scatter(const Ray& rayIn, const HitRecord& hit, Ray& scatteredRay, Color& attenuation) const override {
         Vec3 reflected = Vec3::Reflect(rayIn.Direction.Normalized(), hit.Normal);
-        scatteredRay = Ray(hit.Point, reflected + Fuzziness * Vec3::RandomInUnitSphere());
+        scatteredRay = Ray(hit.Point, reflected + Fuzziness * Vec3::RandomInUnitSphere(), rayIn.Time);
         attenuation = Albedo;
 
         return Vec3::Dot(reflected, hit.Normal) > 0.0f;

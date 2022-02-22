@@ -18,7 +18,7 @@ struct Lambertian : IMaterial {
             scatterDirection = hit.Normal;
         }
 
-        scatteredRay = Ray(hit.Point, scatterDirection);
+        scatteredRay = Ray(hit.Point, scatterDirection, rayIn.Time);
         attenuation = Albedo;
         return true;
     }

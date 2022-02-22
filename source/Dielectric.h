@@ -25,7 +25,7 @@ struct Dielectric : IMaterial {
             Vec3::Reflect(normalizedDir, hit.Normal) :
             Vec3::Refract(normalizedDir, hit.Normal, refRatio);
 
-        scatteredRay = Ray(hit.Point, rDirection);
+        scatteredRay = Ray(hit.Point, rDirection, rayIn.Time);
         attenuation = Color::White();
 
         return true;

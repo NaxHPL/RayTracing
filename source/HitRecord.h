@@ -6,10 +6,10 @@
 struct IMaterial;
 
 struct HitRecord {
-    float T;
+    float T{ 0.0f };
     Vec3 Point;
     Vec3 Normal;
-    bool FrontFace;
+    bool FrontFace{ false };
     std::shared_ptr<IMaterial> Material;
 
     void SetFaceNormal(const Vec3& rayDirection, const Vec3& outwardNormal) {

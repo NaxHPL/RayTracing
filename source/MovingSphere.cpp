@@ -1,12 +1,12 @@
 #include <cmath>
-#include "Sphere.h"
+#include "MovingSphere.h"
 #include "Vec3.h"
 #include "Ray.h"
 #include "HitRecord.h"
 #include "AABB.h"
 
-bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const {
-    Vec3 oc = ray.Origin - Center;
+bool MovingSphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const {
+    Vec3 oc = ray.Origin - Center(ray.Time);
 
     float a = ray.Direction.SqrMagnitude();
     float halfB = Vec3::Dot(ray.Direction, oc);
@@ -29,7 +29,7 @@ bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) c
     }
 
     Vec3 point = ray.At(t);
-    Vec3 outwardNormal = (point - Center) / Radius;
+    Vec3 outwardNormal = (point - Center(ray.Time)) / Radius;
 
     hitRecord.T = t;
     hitRecord.Point = point;
@@ -39,9 +39,23 @@ bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) c
     return true;
 }
 
-bool Sphere::BoundingBox(float time0, float time1, AABB& aabbOut) const {
+Vec3 MovingSphere::Center(float time) const {
+    return Center0 + (Center1 - Center0) * ((time - Time0) / (Time1 - Time0));
+}
+
+bool MovingSphere::BoundingBox(float time0, float time1, AABB& aabbOut) const {
     Vec3 radiusVec = Vec3(Radius, Radius, Radius);
-    aabbOut.Minimum = Center - radiusVec;
-    aabbOut.Maximum = Center + radiusVec;
+
+    AABB time0Box(
+        Center(time0) - radiusVec,
+        Center(time0) + radiusVec
+    );
+    AABB time1Box(
+        Center(time1) - radiusVec,
+        Center(time1) + radiusVec
+    );
+
+    aabbOut = AABB::SurroundingBox(time0Box, time1Box);
+
     return true;
 }

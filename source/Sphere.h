@@ -10,13 +10,15 @@ struct IMaterial;
 
 struct Sphere : IHittable {
     Vec3 Center;
-    float Radius;
+    float Radius{ 0.0f };
     std::shared_ptr<IMaterial> Material;
 
-    Sphere() : Center(Vec3()), Radius(0.0f) { }
+    Sphere() {}
 
     Sphere(const Vec3& center, float radius, std::shared_ptr<IMaterial> material)
-        : Center(center), Radius(radius), Material(material) { }
+        : Center(center), Radius(radius), Material(material) {}
 
     bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override;
+
+    bool BoundingBox(float time0, float time1, AABB& aabbOut) const override;
 };

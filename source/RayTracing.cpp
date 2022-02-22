@@ -11,6 +11,7 @@
 #include "HitRecord.h"
 #include "HittableCollection.h"
 #include "Sphere.h"
+#include "MovingSphere.h"
 #include "Camera.h"
 #include "IMaterial.h"
 #include "Lambertian.h"
@@ -19,7 +20,7 @@
 
 Color GetRayColor(const Ray& ray, const IHittable& world, int depth) {
     if (depth <= 0) {
-        return Color::Black();;
+        return Color::Black();
     }
 
     HitRecord hit;
@@ -57,19 +58,21 @@ HittableCollection GetRandomScene() {
                     // Diffuse
                     Color albedo = Color::Random() * Color::Random();
                     sphereMat = std::make_shared<Lambertian>(albedo);
+                    Vec3 center2 = center + Vec3(0.0f, RandomFloat(0.0f, 0.5f), 0.0f);
+                    world.Add(std::make_shared<MovingSphere>(center, center2, 0.0f, 1.0f, 0.2f, sphereMat));
                 }
                 else if (chooseMat > 0.95f) {
                     // Metal
                     Color albedo = Color::Random(0.5f, 1.0f);
                     float fuzziness = RandomFloat(0.0f, 0.5f);
                     sphereMat = std::make_shared<Metal>(albedo, fuzziness);
+                    world.Add(std::make_shared<Sphere>(center, 0.2f, sphereMat));
                 }
                 else {
                     // Glass
                     sphereMat = std::make_shared<Dielectric>(1.5f);
+                    world.Add(std::make_shared<Sphere>(center, 0.2f, sphereMat));
                 }
-
-                world.Add(std::make_shared<Sphere>(center, 0.2f, sphereMat));
             }
         }
     }
@@ -93,9 +96,8 @@ int main() {
     // Image
 
     const float aspectRatio = 16.9f / 9.0f;
-    const int imageWidth = 1200;
-    const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
-    const int samplesPerPixel = 500;
+    const int imageWidth = 400;
+    const int samplesPerPixel = 100;
     const int maxDepth = 50;
 
     // World
@@ -110,8 +112,9 @@ int main() {
     float verticalFov = 20.0f;
     float aperture = 0.1f;
     float focusDistance = 10.0f;
+    int imageHeight = static_cast<int>(imageWidth / aspectRatio);
 
-    Camera camera(lookFrom, lookAt, vUp, verticalFov, aspectRatio, aperture, focusDistance);
+    Camera camera(lookFrom, lookAt, vUp, verticalFov, aspectRatio, aperture, focusDistance, 0.0f, 1.0f);
 
     // Render
 

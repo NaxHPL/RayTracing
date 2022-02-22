@@ -6,6 +6,7 @@
 
 struct Ray;
 struct HitRecord;
+struct AABB;
 
 struct HittableCollection : IHittable {
     std::vector<std::shared_ptr<IHittable>> hittables;
@@ -18,5 +19,7 @@ struct HittableCollection : IHittable {
         hittables.push_back(hittable);
     }
 
-    virtual bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override;
+    bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override;
+
+    bool BoundingBox(float time0, float time1, AABB& aabbOut) const override;
 };

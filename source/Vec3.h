@@ -41,6 +41,14 @@ struct Vec3 {
         return *this;
     }
 
+    float operator[](const int i) const {
+        switch (i) {
+            case 0:  return X;
+            case 1:  return Y;
+            default: return Z;
+        }
+    }
+
     float Magnitude() const {
         return std::sqrtf(X * X + Y * Y + Z * Z);
     }

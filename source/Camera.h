@@ -11,6 +11,7 @@ class Camera {
     Vec3 lowerLeftCorner;
     Vec3 u, v, w;
     float lensRadius;
+    float t0, t1;
 
 public:
     Camera(Vec3 lookFrom,
@@ -19,7 +20,9 @@ public:
            float verticalFov,
            float aspectRatio,
            float aperture,
-           float focusDistance);
+           float focusDistance,
+           float time0 = 0.0f,
+           float time1 = 0.0f);
 
     Ray GetRay(float s, float t) const;
 };
