@@ -11,8 +11,8 @@ bool HittableCollection::Hit(const Ray& ray, float tMin, float tMax, HitRecord& 
     bool hitAnything = false;
     HitRecord tempRecord;
 
-    for (const std::shared_ptr<IHittable> hittable : hittables) {
-        if (hittable->Hit(ray, tMin, tMax, tempRecord)) {
+    for (const std::shared_ptr<IHittable> obj : Hittables) {
+        if (obj->Hit(ray, tMin, tMax, tempRecord)) {
             hitAnything = true;
             tMax = tempRecord.T;
             hitRecord = tempRecord;
@@ -23,5 +23,23 @@ bool HittableCollection::Hit(const Ray& ray, float tMin, float tMax, HitRecord& 
 }
 
 bool HittableCollection::BoundingBox(float time0, float time1, AABB& aabbOut) const {
+    if (Hittables.empty()) {
+        return false;
+    }
+
+    if (Hittables[0]->BoundingBox(time0, time1, aabbOut)) {
+        return false;
+    }
+
+    AABB aabbTmp;
+
+    for (size_t i = 1; i < Hittables.size(); i++) {
+        if (!Hittables[i]->BoundingBox(time0, time1, aabbTmp)) {
+            return false;
+        }
+
+        AABB::SurroundingBox(aabbOut, aabbTmp, aabbOut);
+    }
+
     return true;
 }

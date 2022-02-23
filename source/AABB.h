@@ -16,6 +16,12 @@ struct AABB {
     bool Hit(const Ray& ray, float tMin, float tMax) const;
 
     static AABB SurroundingBox(const AABB& aabb1, const AABB& aabb2) {
+        AABB aabbRet;
+        SurroundingBox(aabb1, aabb2, aabbRet);
+        return aabbRet;
+    }
+
+    static void SurroundingBox(const AABB& aabb1, const AABB& aabb2, AABB& aabbOut) {
         Vec3 min(
             std::fminf(aabb1.Minimum.X, aabb2.Minimum.X),
             std::fminf(aabb1.Minimum.Y, aabb2.Minimum.Y),
@@ -27,6 +33,7 @@ struct AABB {
             std::fmaxf(aabb1.Maximum.Z, aabb2.Maximum.Z)
         );
 
-        return AABB(min, max);
+        aabbOut.Minimum = min;
+        aabbOut.Maximum = max;
     }
 };

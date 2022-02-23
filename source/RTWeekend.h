@@ -23,6 +23,14 @@ inline float RandomFloat(float min, float max) {
     return min + (max - min) * RandomFloat();
 }
 
+inline int RandomInt() {
+    return std::rand();
+}
+
+inline int RandomInt(int min, int max) {
+    return min + (std::rand() % (max - min + 1));
+}
+
 inline float Clamp(float x, float min, float max) {
     if (x < min) {
         return min;

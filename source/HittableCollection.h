@@ -9,14 +9,14 @@ struct HitRecord;
 struct AABB;
 
 struct HittableCollection : IHittable {
-    std::vector<std::shared_ptr<IHittable>> hittables;
+    std::vector<std::shared_ptr<IHittable>> Hittables;
 
     void Clear() {
-        hittables.clear();
+        Hittables.clear();
     }
 
     void Add(std::shared_ptr<IHittable> hittable) {
-        hittables.push_back(hittable);
+        Hittables.push_back(hittable);
     }
 
     bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override;

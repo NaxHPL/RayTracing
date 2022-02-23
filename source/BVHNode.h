@@ -1,0 +1,31 @@
+#pragma once
+
+#include <memory>
+#include <vector>
+#include "IHittable.h"
+#include "HittableCollection.h"
+#include "AABB.h"
+
+struct Ray;
+struct HitRecord;
+
+struct BVHNode : IHittable {
+    std::shared_ptr<IHittable> LeftChild;
+    std::shared_ptr<IHittable> RightChild;
+    AABB Box;
+
+    BVHNode() {}
+
+    BVHNode(const HittableCollection& collection, float time0, float time1)
+        : BVHNode(collection.Hittables, 0, collection.Hittables.size(), time0, time1) {}
+
+    BVHNode(const std::vector<std::shared_ptr<IHittable>>& srcObjects,
+            size_t start,
+            size_t end,
+            float time0,
+            float time1);
+
+    bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override;
+
+    bool BoundingBox(float time0, float time1, AABB& aabbOut) const override;
+};

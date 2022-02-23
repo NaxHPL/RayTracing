@@ -91,7 +91,7 @@ HittableCollection GetRandomScene() {
 
 int main() {
 
-    std::srand((unsigned int)std::time(NULL));
+    std::srand((unsigned)std::time(NULL));
 
     // Image
 
