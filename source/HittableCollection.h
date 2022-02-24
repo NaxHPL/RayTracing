@@ -2,20 +2,26 @@
 
 #include <memory>
 #include <vector>
-#include "IHittable.h"
+#include "Hittable.h"
 
 struct Ray;
 struct HitRecord;
 struct AABB;
 
-struct HittableCollection : IHittable {
-    std::vector<std::shared_ptr<IHittable>> Hittables;
+struct HittableCollection : Hittable {
+    std::vector<std::shared_ptr<Hittable>> Hittables;
+
+    HittableCollection() {}
+
+    HittableCollection(const std::shared_ptr<Hittable> hittable) {
+        Add(hittable);
+    }
 
     void Clear() {
         Hittables.clear();
     }
 
-    void Add(std::shared_ptr<IHittable> hittable) {
+    void Add(std::shared_ptr<Hittable> hittable) {
         Hittables.push_back(hittable);
     }
 

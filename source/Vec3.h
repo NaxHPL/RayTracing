@@ -41,11 +41,11 @@ struct Vec3 {
         return *this;
     }
 
-    float operator[](const int i) const {
-        switch (i) {
-            case 0:  return X;
-            case 1:  return Y;
-            default: return Z;
+    float operator[](const Axis axis) const {
+        switch (axis) {
+            case Axis::X: return X;
+            case Axis::Y: return Y;
+            default:      return Z;
         }
     }
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "IHittable.h"
+#include "Hittable.h"
 #include "Vec3.h"
 
 struct IMaterial;
@@ -9,7 +9,7 @@ struct Ray;
 struct HitRecord;
 struct AABB;
 
-struct MovingSphere : IHittable {
+struct MovingSphere : Hittable {
     Vec3 Center0, Center1;
     float Time0{ 0.0f };
     float Time1{ 0.0f };

@@ -1,14 +1,14 @@
 #pragma once
 
 #include <memory>
-#include "IHittable.h"
+#include "Hittable.h"
 #include "Vec3.h"
 
 struct Ray;
 struct HitRecord;
 struct IMaterial;
 
-struct Sphere : IHittable {
+struct Sphere : Hittable {
     Vec3 Center;
     float Radius{ 0.0f };
     std::shared_ptr<IMaterial> Material;

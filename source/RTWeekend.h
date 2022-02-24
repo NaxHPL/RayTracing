@@ -7,6 +7,8 @@ const float INF_F = std::numeric_limits<float>::infinity();
 const float PI = 3.1415926536f;
 const float TWO_PI = PI * 2.0f;
 
+enum struct Axis { X, Y, Z };
+
 inline float DegreesToRadians(float degrees) {
     return degrees * PI / 180.0f;
 }

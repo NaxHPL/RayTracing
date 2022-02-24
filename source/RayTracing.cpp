@@ -7,7 +7,7 @@
 #include "Vec3.h"
 #include "Ray.h"
 #include "Color.h"
-#include "IHittable.h"
+#include "Hittable.h"
 #include "HitRecord.h"
 #include "HittableCollection.h"
 #include "Sphere.h"
@@ -18,7 +18,7 @@
 #include "Metal.h"
 #include "Dielectric.h"
 
-Color GetRayColor(const Ray& ray, const IHittable& world, int depth) {
+Color GetRayColor(const Ray& ray, const Hittable& world, int depth) {
     if (depth <= 0) {
         return Color::Black();
     }
