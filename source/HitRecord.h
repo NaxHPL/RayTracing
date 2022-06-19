@@ -7,6 +7,8 @@ struct IMaterial;
 
 struct HitRecord {
     float T{ 0.0f };
+    float U;
+    float V;
     Vec3 Point;
     Vec3 Normal;
     bool FrontFace{ false };

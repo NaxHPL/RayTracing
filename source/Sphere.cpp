@@ -34,6 +34,7 @@ bool Sphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) c
     hitRecord.T = t;
     hitRecord.Point = point;
     hitRecord.SetFaceNormal(ray.Direction, outwardNormal);
+    GetUV(point, hitRecord.U, hitRecord.V);
     hitRecord.Material = Material;
 
     return true;

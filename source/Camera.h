@@ -4,7 +4,9 @@
 
 struct Ray;
 
-class Camera {
+struct Camera {
+
+private:
     Vec3 origin;
     Vec3 horizontal;
     Vec3 vertical;
