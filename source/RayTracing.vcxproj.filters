@@ -95,5 +95,8 @@
     <ClInclude Include="SolidColor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CheckerTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

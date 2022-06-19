@@ -17,6 +17,7 @@
 #include "Lambertian.h"
 #include "Metal.h"
 #include "Dielectric.h"
+#include "CheckerTexture.h"
 
 Color GetRayColor(const Ray& ray, const Hittable& world, int depth) {
     if (depth <= 0) {
@@ -43,8 +44,8 @@ Color GetRayColor(const Ray& ray, const Hittable& world, int depth) {
 HittableCollection GetRandomScene() {
     HittableCollection world;
 
-    std::shared_ptr<Lambertian> groundMat = std::make_shared<Lambertian>(Color::Grey());
-    world.Add(std::make_shared<Sphere>(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, groundMat));
+    std::shared_ptr<CheckerTexture> checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
+    world.Add(std::make_shared<Sphere>(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(checker)));
 
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
@@ -96,9 +97,9 @@ int main() {
     // Image
 
     const float aspectRatio = 16.9f / 9.0f;
-    const int imageWidth = 400;
-    const int samplesPerPixel = 100;
-    const int maxDepth = 50;
+    const int imageWidth = 200;
+    const int samplesPerPixel = 50;
+    const int maxDepth = 25;
 
     // World
 

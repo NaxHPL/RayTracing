@@ -14,6 +14,8 @@ struct Lambertian : IMaterial {
 
     Lambertian(const Color& albedo) : Albedo(std::make_shared<SolidColor>(albedo)) { }
 
+    Lambertian(std::shared_ptr<ITexture> texture) : Albedo(texture) { }
+
     bool Scatter(const Ray& rayIn, const HitRecord& hit, Ray& scatteredRay, Color& attenuation) const override {
         Vec3 scatterDirection = hit.Normal + Vec3::RandomUnitVector();
 

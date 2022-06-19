@@ -153,6 +153,7 @@
     <ClInclude Include="AABB.h" />
     <ClInclude Include="BVHNode.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CheckerTexture.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="HitRecord.h" />
     <ClInclude Include="HittableCollection.h" />
