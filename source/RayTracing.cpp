@@ -88,10 +88,7 @@ HittableCollection GetRandomScene() {
     std::shared_ptr<Metal> mat3 = std::make_shared<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f);
     world.Add(std::make_shared<Sphere>(Vec3(4.0f, 1.0f, 0.0f), 1.0f, mat3));
 
-    HittableCollection world2;
-    world2.Add(std::make_shared<BVHNode>(world, 0.0f, 1.0f));
-
-    return world2;
+    return HittableCollection(std::make_shared<BVHNode>(world, 0.0f, 1.0f));
 }
 
 int main() {
@@ -101,9 +98,9 @@ int main() {
     // Image
 
     const float aspectRatio = 16.9f / 9.0f;
-    const int imageWidth = 200;
-    const int samplesPerPixel = 50;
-    const int maxDepth = 25;
+    const int imageWidth = 400;
+    const int samplesPerPixel = 100;
+    const int maxDepth = 50;
 
     // World
 
