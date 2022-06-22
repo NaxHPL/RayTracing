@@ -27,18 +27,19 @@ bool HittableCollection::BoundingBox(float time0, float time1, AABB& aabbOut) co
         return false;
     }
 
-    if (Hittables[0]->BoundingBox(time0, time1, aabbOut)) {
-        return false;
-    }
-
     AABB aabbTmp;
 
-    for (size_t i = 1; i < Hittables.size(); i++) {
+    for (size_t i = 0; i < Hittables.size(); i++) {
         if (!Hittables[i]->BoundingBox(time0, time1, aabbTmp)) {
             return false;
         }
 
-        AABB::SurroundingBox(aabbOut, aabbTmp, aabbOut);
+        if (i == 0) {
+            aabbOut = aabbTmp;
+        }
+        else {
+            AABB::SurroundingBox(aabbOut, aabbTmp, aabbOut);
+        }
     }
 
     return true;

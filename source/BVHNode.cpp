@@ -14,26 +14,36 @@ BVHNode::BVHNode(const std::vector<std::shared_ptr<Hittable>>& srcObjects,
                  float time0,
                  float time1) {
 
+    auto objects = srcObjects; // Create a modifiable array of the source scene objects
+
+    Axis axis = static_cast<Axis>(RandomInt(0, 2));
+    auto comparator =
+        axis == Axis::X ? Hittable::BoxCompareX :
+        axis == Axis::Y ? Hittable::BoxCompareY :
+        Hittable::BoxCompareZ;
+
     size_t objSpan = end - start;
 
     if (objSpan == 1) {
         LeftChild = RightChild = srcObjects[start];
     }
     else if (objSpan == 2) {
+        if (comparator(objects[start], objects[start + 1])) {
+            LeftChild = objects[start];
+            RightChild = objects[start + 1];
+        }
+        else {
+            LeftChild = objects[start + 1];
+            RightChild = objects[start];
+        }
+
         LeftChild = srcObjects[start];
         RightChild = srcObjects[start + 1];
     }
     else {
-        Axis axis = static_cast<Axis>(RandomInt(0, 2));
-        auto comparator =
-            axis == Axis::X ? Hittable::BoxCompareX :
-            axis == Axis::Y ? Hittable::BoxCompareY :
-            Hittable::BoxCompareZ;
-
-        auto objects = srcObjects; // Create a modifiable array of the source scene objects
         std::sort(objects.begin() + start, objects.begin() + end, comparator);
 
-        size_t mid = objSpan / 2;
+        size_t mid = start + objSpan / 2;
 
         LeftChild = std::make_shared<BVHNode>(objects, start, mid, time0, time1);
         RightChild = std::make_shared<BVHNode>(objects, mid, end, time0, time1);
@@ -61,5 +71,5 @@ bool BVHNode::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) 
 
 bool BVHNode::BoundingBox(float time0, float time1, AABB& aabbOut) const {
     aabbOut = Box;
-    return false;
+    return true;
 }

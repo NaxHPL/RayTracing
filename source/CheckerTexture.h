@@ -22,8 +22,7 @@ struct CheckerTexture : ITexture {
 		float sinY = std::sinf(10.0f * p.Y);
 		float sinZ = std::sinf(10.0f * p.Z);
 
-		return
-			sinX * sinY * sinZ > 0.0f ?
+		return sinX * sinY * sinZ > 0.0f ?
 			Texture1->Value(u, v, p) :
 			Texture2->Value(u, v, p);
 	}

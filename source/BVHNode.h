@@ -17,7 +17,7 @@ struct BVHNode : Hittable {
     BVHNode() {}
 
     BVHNode(const HittableCollection& collection, float time0, float time1)
-        : BVHNode(collection.Hittables, 0, collection.Hittables.size(), time0, time1) {}
+        : BVHNode(collection.Hittables, 0, collection.Hittables.size(), time0, time1) { }
 
     BVHNode(const std::vector<std::shared_ptr<Hittable>>& srcObjects,
             size_t start,

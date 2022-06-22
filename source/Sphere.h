@@ -15,7 +15,7 @@ struct Sphere : Hittable {
     float Radius{ 0.0f };
     std::shared_ptr<IMaterial> Material;
 
-    Sphere() {}
+    Sphere() { }
 
     Sphere(const Vec3& center, float radius, std::shared_ptr<IMaterial> material)
         : Center(center), Radius(radius), Material(material) {}

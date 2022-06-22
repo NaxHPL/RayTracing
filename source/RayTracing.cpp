@@ -17,6 +17,7 @@
 #include "Lambertian.h"
 #include "Metal.h"
 #include "Dielectric.h"
+#include "BVHNode.h"
 #include "CheckerTexture.h"
 
 Color GetRayColor(const Ray& ray, const Hittable& world, int depth) {
@@ -87,7 +88,10 @@ HittableCollection GetRandomScene() {
     std::shared_ptr<Metal> mat3 = std::make_shared<Metal>(Color(0.7f, 0.6f, 0.5f), 0.0f);
     world.Add(std::make_shared<Sphere>(Vec3(4.0f, 1.0f, 0.0f), 1.0f, mat3));
 
-    return world;
+    HittableCollection world2;
+    world2.Add(std::make_shared<BVHNode>(world, 0.0f, 1.0f));
+
+    return world2;
 }
 
 int main() {
