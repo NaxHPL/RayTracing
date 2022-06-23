@@ -19,6 +19,7 @@
 #include "Dielectric.h"
 #include "BVHNode.h"
 #include "CheckerTexture.h"
+#include "NoiseTexture.h"
 
 Color GetRayColor(const Ray& ray, const Hittable& world, int depth) {
     if (depth <= 0) {
@@ -91,28 +92,72 @@ HittableCollection GetRandomScene() {
     return HittableCollection(std::make_shared<BVHNode>(world, 0.0f, 1.0f));
 }
 
-int main() {
+HittableCollection GetTwoSpheresScene() {
+    HittableCollection objects;
+    std::shared_ptr<CheckerTexture> checkerTexture = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
 
+    objects.Add(std::make_shared<Sphere>(Vec3(0.0f, -10.0f, 0.0f), 10.0f, std::make_shared<Lambertian>(checkerTexture)));
+    objects.Add(std::make_shared<Sphere>(Vec3(0.0f, 10.0f, 0.0f), 10.0f, std::make_shared<Lambertian>(checkerTexture)));
+
+    return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
+}
+
+HittableCollection GetTwoPerlinSpheresScene() {
+    HittableCollection objects;
+    std::shared_ptr<NoiseTexture> noiseTexture = std::make_shared<NoiseTexture>(4.0f);
+
+    objects.Add(std::make_shared<Sphere>(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(noiseTexture)));
+    objects.Add(std::make_shared<Sphere>(Vec3(0.0f, 2.0f, 0.0f), 2.0f, std::make_shared<Lambertian>(noiseTexture)));
+
+    return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
+}
+
+int main() {
     std::srand((unsigned)std::time(NULL));
 
     // Image
 
-    const float aspectRatio = 16.9f / 9.0f;
+    const float aspectRatio = 16.0f / 9.0f;
     const int imageWidth = 400;
     const int samplesPerPixel = 100;
     const int maxDepth = 50;
 
     // World
 
-    HittableCollection world = GetRandomScene();
+    HittableCollection world;
+
+    Vec3 lookFrom;
+    Vec3 lookAt;
+    float verticalFov = 40.0f;
+    float aperture = 0.0f;
+
+    switch (2) {
+        case 1:
+            world = GetTwoSpheresScene();
+            lookFrom = Vec3(13.0f, 2.0f, 3.0f);
+            lookAt = Vec3::Zero();
+            verticalFov = 20.0f;
+            break;
+
+        case 2:
+            world = GetTwoPerlinSpheresScene();
+            lookFrom = Vec3(13.0f, 2.0f, 3.0f);
+            lookAt = Vec3::Zero();
+            verticalFov = 20.0f;
+            break;
+
+        default:
+            world = GetRandomScene();
+            lookFrom = Vec3(13.0f, 2.0f, 3.0f);
+            lookAt = Vec3::Zero();
+            verticalFov = 20.0f;
+            aperture = 0.1f;
+            break;
+    }
 
     // Camera
 
-    Vec3 lookFrom(13.0f, 2.0f, 3.0f);
-    Vec3 lookAt = Vec3::Zero();
     Vec3 vUp = Vec3::Up();
-    float verticalFov = 20.0f;
-    float aperture = 0.1f;
     float focusDistance = 10.0f;
     int imageHeight = static_cast<int>(imageWidth / aspectRatio);
 
