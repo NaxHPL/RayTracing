@@ -34,13 +34,15 @@ inline int RandomInt(int min, int max) {
 }
 
 inline float Clamp(float x, float min, float max) {
-    if (x < min) {
-        return min;
-    }
+    return
+        x < min ? min :
+        x > max ? max :
+        x;
+}
 
-    if (x > max) {
-        return max;
-    }
-
-    return x;
+inline int Clamp(int x, int min, int max) {
+    return
+        x < min ? min :
+        x > max ? max :
+        x;
 }

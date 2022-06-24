@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "IMaterial.h"
+#include "Material.h"
 #include "Color.h"
 #include "Vec3.h"
 #include "HitRecord.h"
@@ -9,7 +9,7 @@
 #include "ITexture.h"
 #include "SolidColor.h"
 
-struct Lambertian : IMaterial {
+struct Lambertian : Material {
     std::shared_ptr<ITexture> Albedo;
 
     Lambertian(const Color& albedo) : Albedo(std::make_shared<SolidColor>(albedo)) { }

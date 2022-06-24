@@ -34,7 +34,7 @@ bool MovingSphere::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRec
     hitRecord.T = t;
     hitRecord.Point = point;
     hitRecord.SetFaceNormal(ray.Direction, outwardNormal);
-    hitRecord.Material = Material;
+    hitRecord.Material = Mat;
 
     return true;
 }

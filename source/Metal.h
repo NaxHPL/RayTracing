@@ -1,12 +1,12 @@
 #pragma once
 
-#include "IMaterial.h"
+#include "Material.h"
 #include "Color.h"
 #include "Vec3.h"
 #include "Ray.h"
 #include "HitRecord.h"
 
-struct Metal : IMaterial {
+struct Metal : Material {
     Color Albedo;
     float Fuzziness;
 

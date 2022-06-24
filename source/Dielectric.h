@@ -2,13 +2,13 @@
 
 #include <cmath>
 #include "RTWeekend.h"
-#include "IMaterial.h"
+#include "Material.h"
 #include "Color.h"
 #include "Vec3.h"
 #include "Ray.h"
 #include "HitRecord.h"
 
-struct Dielectric : IMaterial {
+struct Dielectric : Material {
     float IndexOfRefraction;
 
     Dielectric(float indexOfRefraction) : IndexOfRefraction(indexOfRefraction) { }

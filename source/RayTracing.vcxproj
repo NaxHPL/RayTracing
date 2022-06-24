@@ -156,10 +156,12 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CheckerTexture.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="DiffuseLight.h" />
     <ClInclude Include="HitRecord.h" />
     <ClInclude Include="HittableCollection.h" />
     <ClInclude Include="Hittable.h" />
-    <ClInclude Include="IMaterial.h" />
+    <ClInclude Include="ImageTexture.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Lambertian.h" />
     <ClInclude Include="Metal.h" />
     <ClInclude Include="MovingSphere.h" />
@@ -167,9 +169,11 @@
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RTWeekend.h" />
+    <ClInclude Include="RTWeekendStbImage.h" />
     <ClInclude Include="SolidColor.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="ITexture.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Vec3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

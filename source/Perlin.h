@@ -111,7 +111,8 @@ private:
                     acc += (i * uu + (1 - i) * (1 - uu))
                          * (j * vv + (1 - j) * (1 - vv))
                          * (k * ww + (1 - k) * (1 - ww))
-                         * Vec3::Dot(c[i][j][k], weightVec);
+                         * Vec3::Dot(c[i][j][k], weightVec);
+
                 }
             }
         }

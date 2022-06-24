@@ -13,34 +13,34 @@
 #include "Sphere.h"
 #include "MovingSphere.h"
 #include "Camera.h"
-#include "IMaterial.h"
+#include "Material.h"
 #include "Lambertian.h"
 #include "Metal.h"
 #include "Dielectric.h"
 #include "BVHNode.h"
 #include "CheckerTexture.h"
 #include "NoiseTexture.h"
+#include "ImageTexture.h"
 
-Color GetRayColor(const Ray& ray, const Hittable& world, int depth) {
+Color GetRayColor(const Ray& ray, const Color& backgroundColor, const Hittable& world, int depth) {
     if (depth <= 0) {
         return Color::Black();
     }
 
     HitRecord hit;
-    if (world.Hit(ray, 0.001f, INF_F, hit)) {
-        Ray scatteredRay;
-        Color attenuation;
-
-        if (hit.Material->Scatter(ray, hit, scatteredRay, attenuation)) {
-            return attenuation * GetRayColor(scatteredRay, world, depth - 1);
-        }
-
-        return Color::Black();
+    if (!world.Hit(ray, 0.001f, INF_F, hit)) {
+        return backgroundColor;
     }
 
-    Vec3 unitDirection = ray.Direction.Normalized();
-    float t = 0.5f * (unitDirection.Y + 1.0f);
-    return (1.0f - t) * Color::White() + t * Color(0.5f, 0.7f, 1.0f);
+    Ray scattered;
+    Color attenuation;
+    Color emitted = hit.Material->Emitted(hit.U, hit.V, hit.Point);
+
+    if (!hit.Material->Scatter(ray, hit, scattered, attenuation)) {
+        return emitted;
+    }
+
+    return emitted + attenuation * GetRayColor(scattered, backgroundColor, world, depth - 1);
 }
 
 HittableCollection GetRandomScene() {
@@ -55,7 +55,7 @@ HittableCollection GetRandomScene() {
             Vec3 center(a + 0.9f * RandomFloat(), 0.2f, b + 0.9f * RandomFloat());
 
             if ((center - Vec3(4.0f, 0.2f, 0.0f)).Magnitude() > 0.9f) {
-                std::shared_ptr<IMaterial> sphereMat;
+                std::shared_ptr<Material> sphereMat;
 
                 if (chooseMat < 0.8f) {
                     // Diffuse
@@ -112,6 +112,14 @@ HittableCollection GetTwoPerlinSpheresScene() {
     return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
 }
 
+HittableCollection GetEarthScene() {
+    std::shared_ptr<ImageTexture> earthTexture = std::make_shared<ImageTexture>("earthmap.jpg");
+    std::shared_ptr<Lambertian> earthMaterial = std::make_shared<Lambertian>(earthTexture);
+    std::shared_ptr<Sphere> globe = std::make_shared<Sphere>(Vec3::Zero(), 2.0f, earthMaterial);
+
+    return HittableCollection(globe);
+}
+
 int main() {
     std::srand((unsigned)std::time(NULL));
 
@@ -130,13 +138,24 @@ int main() {
     Vec3 lookAt;
     float verticalFov = 40.0f;
     float aperture = 0.0f;
+    Color backgroundColor;
 
-    switch (2) {
+    switch (3) {
+        case 0:
+            world = GetRandomScene();
+            lookFrom = Vec3(13.0f, 2.0f, 3.0f);
+            lookAt = Vec3::Zero();
+            verticalFov = 20.0f;
+            aperture = 0.1f;
+            backgroundColor = Color(0.7f, 0.8f, 1.0f);
+            break;
+
         case 1:
             world = GetTwoSpheresScene();
             lookFrom = Vec3(13.0f, 2.0f, 3.0f);
             lookAt = Vec3::Zero();
             verticalFov = 20.0f;
+            backgroundColor = Color(0.7f, 0.8f, 1.0f);
             break;
 
         case 2:
@@ -144,14 +163,19 @@ int main() {
             lookFrom = Vec3(13.0f, 2.0f, 3.0f);
             lookAt = Vec3::Zero();
             verticalFov = 20.0f;
+            backgroundColor = Color(0.7f, 0.8f, 1.0f);
             break;
 
-        default:
-            world = GetRandomScene();
+        case 3:
+            world = GetEarthScene();
             lookFrom = Vec3(13.0f, 2.0f, 3.0f);
             lookAt = Vec3::Zero();
             verticalFov = 20.0f;
-            aperture = 0.1f;
+            backgroundColor = Color(0.7f, 0.8f, 1.0f);
+            break;
+
+        default:
+            backgroundColor = Color::Black();
             break;
     }
 
@@ -175,7 +199,7 @@ int main() {
                 float u = (j + RandomFloat()) / (imageWidth - 1);
                 float v = (i + RandomFloat()) / (imageHeight - 1);
                 Ray ray = camera.GetRay(u, v);
-                pixelColor += GetRayColor(ray, world, maxDepth);
+                pixelColor += GetRayColor(ray, backgroundColor, world, maxDepth);
             }
             pixelColor.WritePPM(std::cout, samplesPerPixel);
         }
