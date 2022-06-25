@@ -9,9 +9,9 @@ struct AABB {
     Vec3 Minimum;
     Vec3 Maximum;
 
-    AABB() {}
+    AABB() { }
 
-    AABB(const Vec3& minimum, const Vec3& maximum) : Minimum(minimum), Maximum(maximum) {}
+    AABB(const Vec3& minimum, const Vec3& maximum) : Minimum(minimum), Maximum(maximum) { }
 
     bool Hit(const Ray& ray, float tMin, float tMax) const;
 

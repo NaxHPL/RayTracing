@@ -41,7 +41,17 @@ struct Vec3 {
         return *this;
     }
 
+    // Get by Axis
     float operator[](const Axis axis) const {
+        switch (axis) {
+            case Axis::X: return X;
+            case Axis::Y: return Y;
+            default:      return Z;
+        }
+    }
+
+    // Set by Axis
+    float& operator[](const Axis axis) {
         switch (axis) {
             case Axis::X: return X;
             case Axis::Y: return Y;

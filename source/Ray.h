@@ -10,7 +10,7 @@ struct Ray {
     Ray() {}
 
     Ray(const Vec3& origin, const Vec3& direction, float time = 0.0f)
-        : Origin(origin), Direction(direction), Time(time) {}
+        : Origin(origin), Direction(direction), Time(time) { }
 
     Vec3 At(float t) const {
         return Origin + t * Direction;

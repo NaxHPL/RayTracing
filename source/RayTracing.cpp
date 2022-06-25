@@ -21,6 +21,8 @@
 #include "CheckerTexture.h"
 #include "NoiseTexture.h"
 #include "ImageTexture.h"
+#include "DiffuseLight.h"
+#include "AARectangle.h"
 
 Color GetRayColor(const Ray& ray, const Color& backgroundColor, const Hittable& world, int depth) {
     if (depth <= 0) {
@@ -120,15 +122,49 @@ HittableCollection GetEarthScene() {
     return HittableCollection(globe);
 }
 
+HittableCollection GetSimpleLightScene() {
+    HittableCollection objects;
+
+    std::shared_ptr<NoiseTexture> perlinTexture = std::make_shared<NoiseTexture>(4.0f);
+    objects.Add(std::make_shared<Sphere>(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(perlinTexture)));
+    objects.Add(std::make_shared<Sphere>(Vec3(0.0f, 2.0f, 0.0f), 2.0f, std::make_shared<Lambertian>(perlinTexture)));
+
+    std::shared_ptr<DiffuseLight> whiteLight = std::make_shared<DiffuseLight>(Color(2.5f, 2.5f, 2.5f));
+    objects.Add(std::make_shared<Sphere>(Vec3(0.0f, 7.0f, 0.0f), 2.0f, whiteLight));
+
+    std::shared_ptr<DiffuseLight> blueLight = std::make_shared<DiffuseLight>(Color(0.5f, 0.5f, 4.0f));
+    objects.Add(std::make_shared<XYRectangle>(3.0f, 5.0f, 1.0f, 3.0f, -2.0f, blueLight));
+
+    return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
+}
+
+HittableCollection GetCornellBoxScene() {
+    HittableCollection objects;
+
+    std::shared_ptr<Lambertian> red = std::make_shared<Lambertian>(Color(0.65f, 0.05f, 0.05f));
+    std::shared_ptr<Lambertian> white = std::make_shared<Lambertian>(Color(0.73f, 0.73f, 0.73f));
+    std::shared_ptr<Lambertian> green = std::make_shared<Lambertian>(Color(0.12f, 0.45f, 0.15f));
+    std::shared_ptr<DiffuseLight> whiteLight = std::make_shared<DiffuseLight>(Color(15.0f, 15.0f, 15.0f));
+
+    objects.Add(std::make_shared<YZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, green));
+    objects.Add(std::make_shared<YZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, red));
+    objects.Add(std::make_shared<XZRectangle>(213.0f, 343.0f, 227.0f, 332.0f, 554.0f, whiteLight));
+    objects.Add(std::make_shared<XZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));
+    objects.Add(std::make_shared<XZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
+    objects.Add(std::make_shared<XYRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
+
+    return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
+}
+
 int main() {
     std::srand((unsigned)std::time(NULL));
 
     // Image
 
-    const float aspectRatio = 16.0f / 9.0f;
-    const int imageWidth = 400;
-    const int samplesPerPixel = 100;
     const int maxDepth = 50;
+    int imageWidth = 400;
+    float aspectRatio = 16.0f / 9.0f;
+    int samplesPerPixel = 100;
 
     // World
 
@@ -140,7 +176,7 @@ int main() {
     float aperture = 0.0f;
     Color backgroundColor;
 
-    switch (3) {
+    switch (5) {
         case 0:
             world = GetRandomScene();
             lookFrom = Vec3(13.0f, 2.0f, 3.0f);
@@ -174,6 +210,26 @@ int main() {
             backgroundColor = Color(0.7f, 0.8f, 1.0f);
             break;
 
+        case 4:
+            world = GetSimpleLightScene();
+            samplesPerPixel = 400;
+            backgroundColor = Color::Black();
+            lookFrom = Vec3(26.0f, 3.0f, 6.0f);
+            lookAt = Vec3(0.0f, 2.0f, 0.0f);
+            verticalFov = 20.0f;
+            break;
+
+        case 5:
+            world = GetCornellBoxScene();
+            aspectRatio = 1.0f;
+            imageWidth = 600;
+            samplesPerPixel = 200;
+            backgroundColor = Color::Black();
+            lookFrom = Vec3(278.0f, 278.0f, -800.0f);
+            lookAt = Vec3(278.0f, 278.0f, 0.0f);
+            verticalFov = 40.0f;
+            break;
+
         default:
             backgroundColor = Color::Black();
             break;
@@ -192,7 +248,7 @@ int main() {
     std::cout << "P3\n" << imageWidth << ' ' << imageHeight << '\n' << "255\n";
 
     for (int i = imageHeight - 1; i >= 0; i--) {
-        std::cerr << "\nScanlines remaining: " << i << ' ' << std::flush;
+        std::cerr << "\nScanlines remaining: " << (i + 1) << ' ' << std::flush;
         for (int j = 0; j < imageWidth; j++) {
             Color pixelColor = Color::Black();
             for (int s = 0; s < samplesPerPixel; s++) {

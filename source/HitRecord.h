@@ -14,7 +14,7 @@ struct HitRecord {
     bool FrontFace{ false };
     std::shared_ptr<Material> Material;
 
-    void SetFaceNormal(const Vec3& rayDirection, const Vec3& outwardNormal) {
+    inline void SetFaceNormal(const Vec3& rayDirection, const Vec3& outwardNormal) {
         FrontFace = Vec3::Dot(rayDirection, outwardNormal) < 0.0f;
         Normal = FrontFace ? outwardNormal : -outwardNormal;
     }

@@ -18,7 +18,7 @@ struct Sphere : Hittable {
     Sphere() { }
 
     Sphere(const Vec3& center, float radius, std::shared_ptr<Material> material)
-        : Center(center), Radius(radius), Mat(material) {}
+        : Center(center), Radius(radius), Mat(material) { }
 
     bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override;
 
