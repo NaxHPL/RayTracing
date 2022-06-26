@@ -23,6 +23,7 @@
 #include "ImageTexture.h"
 #include "DiffuseLight.h"
 #include "AARectangle.h"
+#include "Box.h"
 
 Color GetRayColor(const Ray& ray, const Color& backgroundColor, const Hittable& world, int depth) {
     if (depth <= 0) {
@@ -153,6 +154,9 @@ HittableCollection GetCornellBoxScene() {
     objects.Add(std::make_shared<XZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
     objects.Add(std::make_shared<XYRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
 
+    objects.Add(std::make_shared<Box>(Vec3(130.0f, 0.0f, 65.0f), Vec3(295.0, 165.0, 230.0), white));
+    objects.Add(std::make_shared<Box>(Vec3(265.0f, 0.0f, 295.0f), Vec3(430.0, 330.0, 460.0), white));
+
     return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
 }
 
@@ -222,7 +226,7 @@ int main() {
         case 5:
             world = GetCornellBoxScene();
             aspectRatio = 1.0f;
-            imageWidth = 600;
+            imageWidth = 400;
             samplesPerPixel = 200;
             backgroundColor = Color::Black();
             lookFrom = Vec3(278.0f, 278.0f, -800.0f);

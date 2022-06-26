@@ -73,5 +73,5 @@ struct YZRectangle : AARectangle {
 	virtual inline Axis GetAxisJ() const override { return Axis::Z; }
 	virtual inline Axis GetAxisK() const override { return Axis::X; }
 
-	virtual inline Vec3 GetOutwardNormal() const override { return -Vec3::Right(); }
+	virtual inline Vec3 GetOutwardNormal() const override { return Vec3::Right(); }
 };
