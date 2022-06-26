@@ -24,6 +24,8 @@
 #include "DiffuseLight.h"
 #include "AARectangle.h"
 #include "Box.h"
+#include "Translate.h"
+#include "RotateY.h"
 
 Color GetRayColor(const Ray& ray, const Color& backgroundColor, const Hittable& world, int depth) {
     if (depth <= 0) {
@@ -154,8 +156,15 @@ HittableCollection GetCornellBoxScene() {
     objects.Add(std::make_shared<XZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
     objects.Add(std::make_shared<XYRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
 
-    objects.Add(std::make_shared<Box>(Vec3(130.0f, 0.0f, 65.0f), Vec3(295.0, 165.0, 230.0), white));
-    objects.Add(std::make_shared<Box>(Vec3(265.0f, 0.0f, 295.0f), Vec3(430.0, 330.0, 460.0), white));
+    std::shared_ptr<Hittable> box1 = std::make_shared<Box>(Vec3::Zero(), Vec3(165.0f, 330.0f, 165.0f), white);
+    box1 = std::make_shared<RotateY>(box1, 15.0f);
+    box1 = std::make_shared<Translate>(box1, Vec3(265.0f, 0.0f, 295.0f));
+    objects.Add(box1);
+
+    std::shared_ptr<Hittable> box2 = std::make_shared<Box>(Vec3::Zero(), Vec3(165.0f, 165.0f, 165.0f), white);
+    box2 = std::make_shared<RotateY>(box2, -18.0f);
+    box2 = std::make_shared<Translate>(box2, Vec3(130.0f, 0.0f, 65.0f));
+    objects.Add(box2);
 
     return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
 }

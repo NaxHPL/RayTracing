@@ -149,6 +149,7 @@
     <ClCompile Include="MovingSphere.cpp" />
     <ClCompile Include="NoiseTexture.cpp" />
     <ClCompile Include="RayTracing.cpp" />
+    <ClCompile Include="RotateY.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Translate.cpp" />
     <ClCompile Include="Vec3.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="NoiseTexture.h" />
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="Ray.h" />
+    <ClInclude Include="RotateY.h" />
     <ClInclude Include="RTWeekend.h" />
     <ClInclude Include="RTWeekendStbImage.h" />
     <ClInclude Include="SolidColor.h" />
