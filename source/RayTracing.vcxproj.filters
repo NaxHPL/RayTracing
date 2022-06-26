@@ -54,7 +54,7 @@
     <ClCompile Include="Translate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RotateY.cpp">
+    <ClCompile Include="Rotate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -140,7 +140,7 @@
     <ClInclude Include="Translate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RotateY.h">
+    <ClInclude Include="Rotate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

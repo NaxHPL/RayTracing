@@ -25,7 +25,7 @@
 #include "AARectangle.h"
 #include "Box.h"
 #include "Translate.h"
-#include "RotateY.h"
+#include "Rotate.h"
 
 Color GetRayColor(const Ray& ray, const Color& backgroundColor, const Hittable& world, int depth) {
     if (depth <= 0) {
@@ -120,7 +120,9 @@ HittableCollection GetTwoPerlinSpheresScene() {
 HittableCollection GetEarthScene() {
     std::shared_ptr<ImageTexture> earthTexture = std::make_shared<ImageTexture>("earthmap.jpg");
     std::shared_ptr<Lambertian> earthMaterial = std::make_shared<Lambertian>(earthTexture);
-    std::shared_ptr<Sphere> globe = std::make_shared<Sphere>(Vec3::Zero(), 2.0f, earthMaterial);
+
+    std::shared_ptr<Hittable> globe = std::make_shared<Sphere>(Vec3::Zero(), 2.0f, earthMaterial);
+    globe = std::make_shared<RotateZ>(globe, 90.0f);
 
     return HittableCollection(globe);
 }
@@ -189,7 +191,7 @@ int main() {
     float aperture = 0.0f;
     Color backgroundColor;
 
-    switch (5) {
+    switch (3) {
         case 0:
             world = GetRandomScene();
             lookFrom = Vec3(13.0f, 2.0f, 3.0f);
@@ -217,7 +219,7 @@ int main() {
 
         case 3:
             world = GetEarthScene();
-            lookFrom = Vec3(13.0f, 2.0f, 3.0f);
+            lookFrom = Vec3(0.0f, 2.0f, 13.0f);
             lookAt = Vec3::Zero();
             verticalFov = 20.0f;
             backgroundColor = Color(0.7f, 0.8f, 1.0f);
