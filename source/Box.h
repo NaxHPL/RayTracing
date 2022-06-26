@@ -3,8 +3,11 @@
 #include "Hittable.h"
 #include "Vec3.h"
 #include "HittableCollection.h"
+#include "AABB.h"
 
 struct Material;
+struct Ray;
+struct HitRecord;
 
 struct Box : Hittable {
 

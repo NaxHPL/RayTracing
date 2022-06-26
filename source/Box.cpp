@@ -1,6 +1,12 @@
 #include "Box.h"
 #include "AARectangle.h"
 #include "BVHNode.h"
+#include "Vec3.h"
+#include "HittableCollection.h"
+
+struct Material;
+struct Ray;
+struct HitRecord;
 
 Box::Box(const Vec3& min, const Vec3& max, std::shared_ptr<Material> mat) {
 	Min = min;
