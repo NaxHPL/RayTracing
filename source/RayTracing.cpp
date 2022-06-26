@@ -120,9 +120,7 @@ HittableCollection GetTwoPerlinSpheresScene() {
 HittableCollection GetEarthScene() {
     std::shared_ptr<ImageTexture> earthTexture = std::make_shared<ImageTexture>("earthmap.jpg");
     std::shared_ptr<Lambertian> earthMaterial = std::make_shared<Lambertian>(earthTexture);
-
-    std::shared_ptr<Hittable> globe = std::make_shared<Sphere>(Vec3::Zero(), 2.0f, earthMaterial);
-    globe = std::make_shared<RotateZ>(globe, 90.0f);
+    std::shared_ptr<Sphere> globe = std::make_shared<Sphere>(Vec3::Zero(), 2.0f, earthMaterial);
 
     return HittableCollection(globe);
 }

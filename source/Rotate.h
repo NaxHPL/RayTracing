@@ -17,9 +17,9 @@ struct Rotation : Hittable {
 
 	void Init(std::shared_ptr<Hittable> hittable, float angle);
 
-	virtual Vec3 Rotate(float x, float y, float z, bool flipSinSign) const = 0;
+	virtual Vec3 Rotate(float x, float y, float z) const = 0;
 
-	Vec3 Rotate(const Vec3& v, bool flipSinSign) const { return Rotate(v.X, v.Y, v.Z, flipSinSign); }
+	Vec3 Rotate(const Vec3& v) const { return Rotate(v.X, v.Y, v.Z); }
 
 	virtual bool Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const override;
 
@@ -32,12 +32,11 @@ struct Rotation : Hittable {
 struct RotateX : Rotation {
 	RotateX(std::shared_ptr<Hittable> hittable, float angle) { Init(hittable, angle); }
 
-	virtual Vec3 Rotate(float x, float y, float z, bool flipSinSign) const override {
-		float sinTheta = flipSinSign ? -SinTheta : SinTheta;
+	virtual Vec3 Rotate(float x, float y, float z) const override {
 		return Vec3(
 			x,
-			CosTheta * y - sinTheta * z,
-			sinTheta * y + CosTheta * z
+			CosTheta * y - SinTheta * z,
+			SinTheta * y + CosTheta * z
 		);
 	}
 };
@@ -45,12 +44,11 @@ struct RotateX : Rotation {
 struct RotateY : Rotation {
 	RotateY(std::shared_ptr<Hittable> hittable, float angle) { Init(hittable, angle); }
 
-	virtual Vec3 Rotate(float x, float y, float z, bool flipSinSign) const override {
-		float sinTheta = flipSinSign ? -SinTheta : SinTheta;
+	virtual Vec3 Rotate(float x, float y, float z) const override {
 		return Vec3(
-			CosTheta * x + sinTheta * z,
+			CosTheta * x + SinTheta * z,
 			y,
-			-sinTheta * x + CosTheta * z
+			-SinTheta * x + CosTheta * z
 		);
 	}
 };
@@ -58,11 +56,10 @@ struct RotateY : Rotation {
 struct RotateZ : Rotation {
 	RotateZ(std::shared_ptr<Hittable> hittable, float angle) { Init(hittable, angle); }
 
-	virtual Vec3 Rotate(float x, float y, float z, bool flipSinSign) const override {
-		float sinTheta = flipSinSign ? -SinTheta : SinTheta;
+	virtual Vec3 Rotate(float x, float y, float z) const override {
 		return Vec3(
-			CosTheta * x - sinTheta * y,
-			sinTheta * x + CosTheta * y,
+			CosTheta * x - SinTheta * y,
+			SinTheta * x + CosTheta * y,
 			z
 		);
 	}
