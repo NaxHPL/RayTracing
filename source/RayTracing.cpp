@@ -26,6 +26,7 @@
 #include "Box.h"
 #include "Translate.h"
 #include "Rotate.h"
+#include "ConstantMedium.h"
 
 Color GetRayColor(const Ray& ray, const Color& backgroundColor, const Hittable& world, int depth) {
     if (depth <= 0) {
@@ -104,7 +105,7 @@ HittableCollection GetTwoSpheresScene() {
     objects.Add(std::make_shared<Sphere>(Vec3(0.0f, -10.0f, 0.0f), 10.0f, std::make_shared<Lambertian>(checkerTexture)));
     objects.Add(std::make_shared<Sphere>(Vec3(0.0f, 10.0f, 0.0f), 10.0f, std::make_shared<Lambertian>(checkerTexture)));
 
-    return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
+    return objects;
 }
 
 HittableCollection GetTwoPerlinSpheresScene() {
@@ -114,7 +115,7 @@ HittableCollection GetTwoPerlinSpheresScene() {
     objects.Add(std::make_shared<Sphere>(Vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(noiseTexture)));
     objects.Add(std::make_shared<Sphere>(Vec3(0.0f, 2.0f, 0.0f), 2.0f, std::make_shared<Lambertian>(noiseTexture)));
 
-    return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
+    return objects;
 }
 
 HittableCollection GetEarthScene() {
@@ -138,7 +139,7 @@ HittableCollection GetSimpleLightScene() {
     std::shared_ptr<DiffuseLight> blueLight = std::make_shared<DiffuseLight>(Color(0.5f, 0.5f, 4.0f));
     objects.Add(std::make_shared<XYRectangle>(3.0f, 5.0f, 1.0f, 3.0f, -2.0f, blueLight));
 
-    return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
+    return objects;
 }
 
 HittableCollection GetCornellBoxScene() {
@@ -166,7 +167,112 @@ HittableCollection GetCornellBoxScene() {
     box2 = std::make_shared<Translate>(box2, Vec3(130.0f, 0.0f, 65.0f));
     objects.Add(box2);
 
-    return HittableCollection(std::make_shared<BVHNode>(objects, 0.0f, 1.0f));
+    return objects;
+}
+
+HittableCollection GetCornellSmokeScene() {
+    HittableCollection objects;
+
+    std::shared_ptr<Lambertian> red = std::make_shared<Lambertian>(Color(0.65f, 0.05f, 0.05f));
+    std::shared_ptr<Lambertian> white = std::make_shared<Lambertian>(Color(0.73f, 0.73f, 0.73f));
+    std::shared_ptr<Lambertian> green = std::make_shared<Lambertian>(Color(0.12f, 0.45f, 0.15f));
+    std::shared_ptr<DiffuseLight> whiteLight = std::make_shared<DiffuseLight>(Color(7.0f, 7.0f, 7.0f));
+
+    objects.Add(std::make_shared<YZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, green));
+    objects.Add(std::make_shared<YZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, red));
+    objects.Add(std::make_shared<XZRectangle>(113.0f, 443.0f, 127.0f, 432.0f, 554.0f, whiteLight));
+    objects.Add(std::make_shared<XZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 0.0f, white));
+    objects.Add(std::make_shared<XZRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
+    objects.Add(std::make_shared<XYRectangle>(0.0f, 555.0f, 0.0f, 555.0f, 555.0f, white));
+
+    std::shared_ptr<Hittable> box1 = std::make_shared<Box>(Vec3::Zero(), Vec3(165.0f, 330.0f, 165.0f), white);
+    box1 = std::make_shared<RotateY>(box1, 15.0f);
+    box1 = std::make_shared<Translate>(box1, Vec3(265.0f, 0.0f, 295.0f));
+    objects.Add(std::make_shared<ConstantMedium>(box1, 0.01f, Color::Black()));
+
+    std::shared_ptr<Hittable> box2 = std::make_shared<Box>(Vec3::Zero(), Vec3(165.0f, 165.0f, 165.0f), white);
+    box2 = std::make_shared<RotateY>(box2, -18.0f);
+    box2 = std::make_shared<Translate>(box2, Vec3(130.0f, 0.0f, 65.0f));
+    objects.Add(std::make_shared<ConstantMedium>(box2, 0.01f, Color::White()));
+
+    return objects;
+}
+
+HittableCollection GetFinalBook2Scene() {
+    HittableCollection objects;
+
+    // Ground boxes
+    HittableCollection groundBoxes;
+    std::shared_ptr<Lambertian> ground = std::make_shared<Lambertian>(Color(0.48f, 0.83f, 0.53f));
+    const int boxes_per_side = 20;
+    const float boxWidth = 100.0f;
+
+    for (int i = 0; i < boxes_per_side; i++) {
+        for (int j = 0; j < boxes_per_side; j++) {
+            float x0 = -1000.0f + i * boxWidth;
+            float z0 = -1000.0f + j * boxWidth;
+            float y0 = 0.0f;
+
+            float x1 = x0 + boxWidth;
+            float y1 = RandomFloat(1.0f, 101.0f);
+            float z1 = z0 + boxWidth;
+
+            groundBoxes.Add(std::make_shared<Box>(Vec3(x0, y0, z0), Vec3(x1, y1, z1), ground));
+        }
+    }
+
+    objects.Add(std::make_shared<BVHNode>(groundBoxes, 0.0f, 1.0f));
+
+    // Light
+    std::shared_ptr<DiffuseLight> light = std::make_shared<DiffuseLight>(Color(7.0f, 7.0f, 7.0f));
+    objects.Add(std::make_shared<XZRectangle>(123.0f, 423.0f, 147.0f, 412.0f, 554.0f, light));
+
+    // Moving sphere
+    Vec3 center1 = Vec3(400.0f, 400.0f, 200.0f);
+    Vec3 center2 = center1 + Vec3(30.0f, 0.0f, 0.0f);
+    std::shared_ptr<Lambertian> movingSphereMat = std::make_shared<Lambertian>(Color(0.7f, 0.3f, 0.1f));
+    objects.Add(std::make_shared<MovingSphere>(center1, center2, 0.0f, 1.0f, 50.0f, movingSphereMat));
+
+    // Glass ball
+    objects.Add(std::make_shared<Sphere>(Vec3(260.0f, 150.0f, 45.0f), 50.0f, std::make_shared<Dielectric>(1.5f)));
+
+    // Metal ball
+    objects.Add(std::make_shared<Sphere>(Vec3(0.0f, 150.0f, 145.0f), 50.0f, std::make_shared<Metal>(Color(0.8f, 0.8f, 0.9f), 1.0f)));
+
+    // Subsurface reflection sphere
+    std::shared_ptr<Sphere> boundary = std::make_shared<Sphere>(Vec3(360.0f, 150.0f, 145.0f), 70.0f, std::make_shared<Dielectric>(1.5f));
+    objects.Add(boundary);
+    objects.Add(std::make_shared<ConstantMedium>(boundary, 0.2f, Color(0.2f, 0.4f, 0.9f)));
+
+    // Mist
+    boundary = std::make_shared<Sphere>(Vec3::Zero(), 5000.0f, std::make_shared<Dielectric>(1.5f));
+    objects.Add(std::make_shared<ConstantMedium>(boundary, 0.0001f, Color::White()));
+
+    // Earth sphere
+    std::shared_ptr<Lambertian> earthMaterial = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("earthmap.jpg"));
+    objects.Add(std::make_shared<Sphere>(Vec3(400.0f, 200.0f, 400.0f), 100.0f, earthMaterial));
+
+    // Perlin sphere
+    std::shared_ptr<NoiseTexture> perlinTexture = std::make_shared<NoiseTexture>(0.1f);
+    objects.Add(std::make_shared<Sphere>(Vec3(220.0f, 280.0f, 300.0f), 80.0f, std::make_shared<Lambertian>(perlinTexture)));
+
+    // Lots of spheres
+    HittableCollection spheres;
+    std::shared_ptr<Lambertian> white = std::make_shared<Lambertian>(Color(0.73f, 0.73f, 0.73f));
+    const int numSpheres = 1000;
+
+    for (int i = 0; i < numSpheres; i++) {
+        spheres.Add(std::make_shared<Sphere>(Vec3::Random(0.0f, 165.0f), 10.0f, white));
+    }
+
+    objects.Add(
+        std::make_shared<Translate>(
+            std::make_shared<RotateY>(
+                std::make_shared<BVHNode>(spheres, 0.0f, 1.0f), 15.0f),
+        Vec3(-100.0f, 270.0f, 395.0f))
+    );
+
+    return objects;
 }
 
 int main() {
@@ -189,7 +295,7 @@ int main() {
     float aperture = 0.0f;
     Color backgroundColor;
 
-    switch (3) {
+    switch (7) {
         case 0:
             world = GetRandomScene();
             lookFrom = Vec3(13.0f, 2.0f, 3.0f);
@@ -235,10 +341,31 @@ int main() {
         case 5:
             world = GetCornellBoxScene();
             aspectRatio = 1.0f;
-            imageWidth = 400;
+            imageWidth = 200;
             samplesPerPixel = 200;
             backgroundColor = Color::Black();
             lookFrom = Vec3(278.0f, 278.0f, -800.0f);
+            lookAt = Vec3(278.0f, 278.0f, 0.0f);
+            verticalFov = 40.0f;
+            break;
+
+        case 6:
+            world = GetCornellSmokeScene();
+            aspectRatio = 1.0f;
+            imageWidth = 600;
+            samplesPerPixel = 200;
+            lookFrom = Vec3(278.0f, 278.0f, -800.0f);
+            lookAt = Vec3(278.0f, 278.0f, 0.0f);
+            verticalFov = 40.0f;
+            break;
+
+        case 7:
+            world = GetFinalBook2Scene();
+            aspectRatio = 1.0f;
+            imageWidth = 800;
+            samplesPerPixel = 10000;
+            backgroundColor = Color::Black();
+            lookFrom = Vec3(478.0f, 278.0f, -600.0f);
             lookAt = Vec3(278.0f, 278.0f, 0.0f);
             verticalFov = 40.0f;
             break;

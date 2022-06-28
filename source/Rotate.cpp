@@ -25,7 +25,7 @@ void Rotation::Init(std::shared_ptr<Hittable> hittable, float angle) {
                 float y = j * BBox.Maximum.Y + (1 - j) * BBox.Minimum.Y;
                 float z = k * BBox.Maximum.Z + (1 - k) * BBox.Minimum.Z;
 
-                Vec3 testVector = Rotate(x, y, z);
+                Vec3 testVector = Rotate(x, y, z, false);
 
                 for (int a = 0; a < 3; a++) {
                     Axis axis = static_cast<Axis>(a);
@@ -40,8 +40,8 @@ void Rotation::Init(std::shared_ptr<Hittable> hittable, float angle) {
 }
 
 bool Rotation::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord) const {
-    Vec3 rotatedOrigin = Rotate(ray.Origin);
-    Vec3 rotatedDirection = Rotate(ray.Direction);
+    Vec3 rotatedOrigin = Rotate(ray.Origin, true);
+    Vec3 rotatedDirection = Rotate(ray.Direction, true);
 
     Ray rotatedRay(rotatedOrigin, rotatedDirection, ray.Time);
 
@@ -49,8 +49,8 @@ bool Rotation::Hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord)
         return false;
     }
 
-    Vec3 rotatedPoint = Rotate(hitRecord.Point);
-    Vec3 rotatedNormal = Rotate(hitRecord.Normal);
+    Vec3 rotatedPoint = Rotate(hitRecord.Point, false);
+    Vec3 rotatedNormal = Rotate(hitRecord.Normal, false);
 
     hitRecord.Point = rotatedPoint;
     hitRecord.SetFaceNormal(rotatedDirection, rotatedNormal);
