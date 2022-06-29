@@ -3,6 +3,7 @@
 #include <memory>
 #include <cstdlib>
 #include <ctime>
+
 #include "RTWeekend.h"
 #include "Vec3.h"
 #include "Ray.h"
@@ -27,6 +28,7 @@
 #include "Translate.h"
 #include "Rotate.h"
 #include "ConstantMedium.h"
+#include "external/BS_thread_pool.h"
 
 Color GetRayColor(const Ray& ray, const Color& backgroundColor, const Hittable& world, int depth) {
     if (depth <= 0) {
@@ -49,7 +51,7 @@ Color GetRayColor(const Ray& ray, const Color& backgroundColor, const Hittable& 
     return emitted + attenuation * GetRayColor(scattered, backgroundColor, world, depth - 1);
 }
 
-HittableCollection GetRandomScene() {
+HittableCollection GetFinalBook1Scene() {
     HittableCollection world;
 
     std::shared_ptr<CheckerTexture> checker = std::make_shared<CheckerTexture>(Color(0.2f, 0.3f, 0.1f), Color(0.9f, 0.9f, 0.9f));
@@ -278,6 +280,8 @@ HittableCollection GetFinalBook2Scene() {
 int main() {
     std::srand((unsigned)std::time(NULL));
 
+    const bool multithreadingEnabled = true;
+
     // Image
 
     const int maxDepth = 50;
@@ -297,7 +301,10 @@ int main() {
 
     switch (7) {
         case 0:
-            world = GetRandomScene();
+            world = GetFinalBook1Scene();
+            aspectRatio = 3.0f / 2.0f;
+            imageWidth = 1200;
+            samplesPerPixel = 500;
             lookFrom = Vec3(13.0f, 2.0f, 3.0f);
             lookAt = Vec3::Zero();
             verticalFov = 20.0f;
@@ -341,7 +348,7 @@ int main() {
         case 5:
             world = GetCornellBoxScene();
             aspectRatio = 1.0f;
-            imageWidth = 200;
+            imageWidth = 600;
             samplesPerPixel = 200;
             backgroundColor = Color::Black();
             lookFrom = Vec3(278.0f, 278.0f, -800.0f);
@@ -385,19 +392,51 @@ int main() {
 
     // Render
 
+    BS::thread_pool threadPool;
+
     std::cout << "P3\n" << imageWidth << ' ' << imageHeight << '\n' << "255\n";
 
     for (int i = imageHeight - 1; i >= 0; i--) {
         std::cerr << "\nScanlines remaining: " << (i + 1) << ' ' << std::flush;
+
         for (int j = 0; j < imageWidth; j++) {
-            Color pixelColor = Color::Black();
-            for (int s = 0; s < samplesPerPixel; s++) {
-                float u = (j + RandomFloat()) / (imageWidth - 1);
-                float v = (i + RandomFloat()) / (imageHeight - 1);
-                Ray ray = camera.GetRay(u, v);
-                pixelColor += GetRayColor(ray, backgroundColor, world, maxDepth);
+            if (multithreadingEnabled) {
+                auto loop = [&](const int a, const int b) {
+                    Color color = Color::Black();
+
+                    for (int s = a; s < b; s++) {
+                        float u = (j + RandomFloat()) / (imageWidth - 1);
+                        float v = (i + RandomFloat()) / (imageHeight - 1);
+                        Ray ray = camera.GetRay(u, v);
+                        color += GetRayColor(ray, backgroundColor, world, maxDepth);
+                    }
+
+                    return color;
+                };
+
+                BS::multi_future<Color> mf = threadPool.parallelize_loop(0, samplesPerPixel, loop);
+
+                std::vector<Color> colors = mf.get();
+                Color pixelColor = Color::Black();
+
+                for (size_t i = 0; i < colors.size(); i++) {
+                    pixelColor += colors[i];
+                }
+
+                pixelColor.WritePPM(std::cout, samplesPerPixel);
             }
-            pixelColor.WritePPM(std::cout, samplesPerPixel);
+            else {
+                Color pixelColor = Color::Black();
+
+                for (int s = 0; s < samplesPerPixel; s++) {
+                    float u = (j + RandomFloat()) / (imageWidth - 1);
+                    float v = (i + RandomFloat()) / (imageHeight - 1);
+                    Ray ray = camera.GetRay(u, v);
+                    pixelColor += GetRayColor(ray, backgroundColor, world, maxDepth);
+                }
+
+                pixelColor.WritePPM(std::cout, samplesPerPixel);
+            }
         }
     }
 
