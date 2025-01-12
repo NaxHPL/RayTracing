@@ -1,3 +1,5 @@
+<h1>Final renders:</h1>
+
 <p>
     <img src="https://github.com/NaxHPL/RayTracing/blob/main/images/next_week_final_render.png"/>
 </p>
